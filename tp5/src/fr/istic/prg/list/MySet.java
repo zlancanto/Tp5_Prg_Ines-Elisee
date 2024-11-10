@@ -90,12 +90,17 @@ public class MySet extends List<SubSet> {
 	 */
 
 	public boolean containsValue(int value) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		return false;
+
+		int rank = value / 256;
+		int valueSet = value % 256;
+		Iterator<SubSet> it = this.iterator();
+		SubSet subSet = it.getValue();
+
+		while (subSet.rank <= rank && !subSet.set.contains(valueSet)) {
+			it.goForward();
+		}
+
+		return subSet.set.contains(valueSet);
 	}
 
 	/**
@@ -114,11 +119,7 @@ public class MySet extends List<SubSet> {
 	 * @param is flux d'entrée.
 	 */
 	public void addAllFromStream(InputStream is) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+
 	}
 
 	/**
@@ -127,11 +128,23 @@ public class MySet extends List<SubSet> {
 	 * @param element valuer à ajouter.
 	 */
 	public void addNumber(int value) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+
+		int rank = value / 256;
+		int smallSetOccurence = value % 256;
+		Iterator<SubSet> it = iterator();
+		SubSet subSet = it.getValue();
+
+		while (subSet.rank < rank) {
+			it.goForward();
+		}
+
+		if (subSet.rank == rank) {
+			subSet.set.add(smallSetOccurence);
+		} else {
+			SmallSet smallSet = new SmallSet();
+			smallSet.add(smallSetOccurence);
+			it.addLeft(new SubSet(rank, smallSet));
+		}
 	}
 
 	/**
@@ -163,23 +176,33 @@ public class MySet extends List<SubSet> {
 	 * @param element valeur à supprimer
 	 */
 	public void removeNumber(int value) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+
+		int rank = value / 256;
+		int smallSetOccurence = value % 256;
+		Iterator<SubSet> it = iterator();
+		SubSet subSet = it.getValue();
+
+		while (subSet.rank < rank) {
+			it.goForward();
+		}
+
+		if (subSet.rank == rank) {
+			subSet.set.remove(smallSetOccurence);
+		}
 	}
 
 	/**
 	 * @return taille de l'ensemble this
 	 */
 	public int size() {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		return -1;
+		Iterator<SubSet> it = this.iterator();
+		SubSet subSet = it.getValue();
+		int count = 0;
+		while (!it.isOnFlag()) {
+			count += subSet.set.size();
+			it.goForward();
+		}
+		return count;
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -192,11 +215,7 @@ public class MySet extends List<SubSet> {
 	 * @param set2 deuxième ensemble
 	 */
 	public void difference(MySet set2) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+
 	}
 
 	/**
