@@ -245,6 +245,23 @@ public class MySet extends List<SubSet> {
 	 */
 	public void difference(MySet set2) {
 
+		/* Parcours this */
+		Iterator<SubSet> it1 = this.iterator();
+		SubSet subSet1 = it1.getValue();
+
+		/* Parcours set2 */
+		Iterator<SubSet> it2 = set2.iterator();
+		SubSet subSet2 = it2.getValue();
+
+		while (!it1.isOnFlag() && !it2.isOnFlag()) {
+			if (subSet1.rank < subSet2.rank) {
+				it1.goForward();
+			} else if (subSet1.rank > subSet2.rank) {
+				it2.goForward();
+			} else {
+				it1.getValue().set.difference(subSet2.set);
+			}
+		}
 	}
 
 	/**
