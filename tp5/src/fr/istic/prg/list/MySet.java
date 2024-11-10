@@ -118,7 +118,7 @@ public class MySet extends List<SubSet> {
 	 * 
 	 * @param is flux d'entrée.
 	 */
-	public void addAllFromStream(InputStream is) {
+	public void AllFromStreaddam(InputStream is) {
 		try {
 			/* Correspond à la valeur qui doit être ajoutée à this */
 			int value;
@@ -474,6 +474,7 @@ public class MySet extends List<SubSet> {
 		int value = scanner.nextInt();
 		while (value < min || value > 32767) {
 			System.out.println("valeur incorrecte");
+			value = scanner.nextInt();
 		}
 		return value;
 	}
