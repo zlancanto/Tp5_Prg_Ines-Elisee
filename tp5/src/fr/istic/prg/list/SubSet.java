@@ -6,7 +6,9 @@ import fr.istic.prg.list_util.SuperT;
 /**
  * Classe représentant les sous-ensembles de la classe MySet.
  * 
- * @author Mickaël Foursov <foursov@univ-rennes1.fr>
+ * @author Zlanca-Nto ELisée MIHAN<zlanca-nto.mihan@etudiant.univ-rennes.fr>
+ * @author Ines Gaetan NOUBI-SI KUISSEU
+ *         <ines-gaetan.noubi@etudiant.univ-rennes.fr>
  * @version 5.0
  * @since 2022-09-23
  */
