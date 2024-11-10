@@ -183,7 +183,7 @@ public class SmallSet {
 	 */
 	public boolean isIncludedIn(SmallSet set2) {
 		int i = 0;
-		while ((!tab[i] || tab[i] && set2.tab[i]) && (i < SET_SIZE)) {
+		while ((i < SET_SIZE) && (!tab[i] || tab[i] && set2.tab[i])) {
 			i++;
 		}
 
