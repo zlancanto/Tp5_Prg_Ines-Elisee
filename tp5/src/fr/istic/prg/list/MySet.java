@@ -398,15 +398,23 @@ public class MySet extends List<SubSet> {
 		Iterator<SubSet> it1 = this.iterator();
 		/* Parcours set2 */
 		Iterator<SubSet> it2 = set2.iterator();
-		boolean valueIsPresent = false;
 
 		while (!it1.isOnFlag()) {
 			SubSet subSet1 = it1.getValue();
 			SubSet subSet2 = it2.getValue();
-			while (subSet2.rank < subSet1.rank) {
-				subSet2 = it2.nextValue();
+
+			if ((subSet2.rank < subSet1.rank && subSet1.rank < it2.nextValue().rank)) {
+				return false;
+			} else if (subSet1.rank == subSet2.rank && !subSet1.set.isIncludedIn(subSet2.set)) {
+				return false;
+			} else if (subSet2.rank < subSet1.rank) {
+				it2.goForward();
+			} else if (subSet1.rank == subSet2.rank && subSet1.set.isIncludedIn(subSet2.set)) {
+				it1.goForward();
+				it2.goForward();
 			}
 		}
+		return true;
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
