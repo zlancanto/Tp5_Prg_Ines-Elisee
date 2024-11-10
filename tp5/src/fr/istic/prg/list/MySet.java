@@ -119,7 +119,23 @@ public class MySet extends List<SubSet> {
 	 * @param is flux d'entrée.
 	 */
 	public void addAllFromStream(InputStream is) {
-
+		try {
+			/* Correspond à la valeur qui doit être ajoutée à this */
+			int value;
+			while ((value = is.read()) != -1) {
+				addNumber(value);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (is != null) {
+					is.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
