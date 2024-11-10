@@ -118,7 +118,7 @@ public class MySet extends List<SubSet> {
 	 * 
 	 * @param is flux d'entrée.
 	 */
-	public void AllFromStreaddam(InputStream is) {
+	public void addAllFromStream(InputStream is) {
 		try {
 			/* Correspond à la valeur qui doit être ajoutée à this */
 			int value;
@@ -175,15 +175,28 @@ public class MySet extends List<SubSet> {
 
 	/**
 	 * Supprimer de this toutes les valeurs prises dans is.
+	 * (arrêt par lecture de -1)
 	 * 
 	 * @param is flux d'entrée
 	 */
 	public void removeAllFromStream(InputStream is) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+		try {
+			/* Correspond à la valeur qui doit être supprimée de this */
+			int value;
+			while ((value = is.read()) != -1) {
+				removeNumber(value);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (is != null) {
+					is.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
