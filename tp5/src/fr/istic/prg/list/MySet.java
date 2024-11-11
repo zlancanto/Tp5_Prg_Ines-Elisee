@@ -125,10 +125,10 @@ public class MySet extends List<SubSet> {
 	 */
 	public void addAllFromStream(InputStream is) {
 		Scanner sc = new Scanner(is);
-		int value = readValue(sc, 0);
+		int value = readValue(sc, -1);
 		while (value != -1) {
-			addNumber(value);
-			value = readValue(sc, 0);
+			this.addNumber(value);
+			value = readValue(sc, -1);
 		}
 	}
 
@@ -145,11 +145,11 @@ public class MySet extends List<SubSet> {
 		SubSet subSet = it.getValue();
 
 		while (subSet.rank < rank) {
-			it.goForward();
+			subSet = it.nextValue();
 		}
 
 		if (subSet.rank == rank) {
-			subSet.set.add(smallSetOccurence);
+			it.getValue().set.add(smallSetOccurence);
 		} else {
 			SmallSet smallSet = new SmallSet();
 			smallSet.add(smallSetOccurence);
@@ -174,22 +174,11 @@ public class MySet extends List<SubSet> {
 	 * @param is flux d'entrée
 	 */
 	public void removeAllFromStream(InputStream is) {
-		try {
-			/* Correspond à la valeur qui doit être supprimée de this */
-			int value;
-			while ((value = is.read()) != -1) {
-				removeNumber(value);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		Scanner sc = new Scanner(is);
+		int value = readValue(sc, -1);
+		while (value != -1) {
+			this.removeNumber(value);
+			value = readValue(sc, -1);
 		}
 	}
 
@@ -206,11 +195,11 @@ public class MySet extends List<SubSet> {
 		SubSet subSet = it.getValue();
 
 		while (subSet.rank < rank) {
-			it.goForward();
+			subSet = it.nextValue();
 		}
 
 		if (subSet.rank == rank) {
-			subSet.set.remove(smallSetOccurence);
+			it.getValue().set.remove(smallSetOccurence);
 		}
 	}
 
