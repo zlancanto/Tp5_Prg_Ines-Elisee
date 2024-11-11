@@ -164,6 +164,7 @@ public class MySet extends List<SubSet> {
 	public void remove() {
 		System.out.println("  valeurs a supprimer (-1 pour finir) : ");
 		this.removeAllFromStream(System.in);
+		System.out.println(NEW_VALUE);
 		this.printNewState();
 	}
 
@@ -393,24 +394,27 @@ public class MySet extends List<SubSet> {
 	 */
 	public boolean isIncludedIn(MySet set2) {
 
-		/* Parcours this */
 		Iterator<SubSet> it1 = this.iterator();
-		/* Parcours set2 */
 		Iterator<SubSet> it2 = set2.iterator();
 
 		while (!it1.isOnFlag()) {
 			SubSet subSet1 = it1.getValue();
 			SubSet subSet2 = it2.getValue();
 
-			if ((subSet2.rank < subSet1.rank && subSet1.rank < it2.nextValue().rank)) {
-				return false;
-			} else if (subSet1.rank == subSet2.rank && !subSet1.set.isIncludedIn(subSet2.set)) {
+			if (subSet1.rank < subSet2.rank) {
 				return false;
 			} else if (subSet2.rank < subSet1.rank) {
 				it2.goForward();
-			} else if (subSet1.rank == subSet2.rank && subSet1.set.isIncludedIn(subSet2.set)) {
+			} else if (subSet1.set.isIncludedIn(subSet2.set)) {
+				/*
+				 * Quand les deux premières conditions ne sont pas vérifiées,
+				 * c'est que subSet1.rank == subSet2.rank, donc pas peine
+				 * de vérifier à nouveau cette égalité dans le if
+				 */
 				it1.goForward();
 				it2.goForward();
+			} else {
+				return false;
 			}
 		}
 		return true;
