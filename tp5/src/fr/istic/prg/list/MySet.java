@@ -15,7 +15,9 @@ import java.io.OutputStream;
 import java.util.Scanner;
 
 /**
- * @author Mickaël Foursov <foursov@univ-rennes.fr>
+ * @author Zlanca-Nto ELisée MIHAN<zlanca-nto.mihan@etudiant.univ-rennes.fr>
+ * @author Ines Gaetan NOUBI-SI KUISSEU
+ *         <ines-gaetan.noubi@etudiant.univ-rennes.fr>
  * @version 4.1
  * @since 2023-10-11
  */
@@ -85,22 +87,24 @@ public class MySet extends List<SubSet> {
 	}
 
 	/**
-	 * @param element valeur à tester
+	 * @param value valeur à tester
 	 * @return true si valeur appartient à l'ensemble, false sinon
 	 */
 
 	public boolean containsValue(int value) {
 
 		int rank = value / 256;
-		int valueSet = value % 256;
+		int smallSetValue = value % 256;
 		Iterator<SubSet> it = this.iterator();
-		SubSet subSet = it.getValue();
 
-		while (subSet.rank <= rank && !subSet.set.contains(valueSet)) {
+		while (it.getValue().rank < rank) {
 			it.goForward();
 		}
+		if (it.getValue().rank == rank && it.getValue().set.contains(smallSetValue)) {
+			return true;
+		}
 
-		return subSet.set.contains(valueSet);
+		return false;
 	}
 
 	/**
@@ -110,6 +114,7 @@ public class MySet extends List<SubSet> {
 	public void add() {
 		System.out.println(" valeurs a ajouter (-1 pour finir) : ");
 		this.addAllFromStream(System.in);
+		System.out.println(NEW_VALUE);
 		this.printNewState();
 	}
 
@@ -119,7 +124,12 @@ public class MySet extends List<SubSet> {
 	 * @param is flux d'entrée.
 	 */
 	public void addAllFromStream(InputStream is) {
-
+		Scanner sc = new Scanner(is);
+		int value = readValue(sc, -1);
+		while (value != -1) {
+			this.addNumber(value);
+			value = readValue(sc, -1);
+		}
 	}
 
 	/**
@@ -131,15 +141,15 @@ public class MySet extends List<SubSet> {
 
 		int rank = value / 256;
 		int smallSetOccurence = value % 256;
-		Iterator<SubSet> it = iterator();
+		Iterator<SubSet> it = this.iterator();
 		SubSet subSet = it.getValue();
 
 		while (subSet.rank < rank) {
-			it.goForward();
+			subSet = it.nextValue();
 		}
 
 		if (subSet.rank == rank) {
-			subSet.set.add(smallSetOccurence);
+			it.getValue().set.add(smallSetOccurence);
 		} else {
 			SmallSet smallSet = new SmallSet();
 			smallSet.add(smallSetOccurence);
@@ -154,6 +164,7 @@ public class MySet extends List<SubSet> {
 	public void remove() {
 		System.out.println("  valeurs a supprimer (-1 pour finir) : ");
 		this.removeAllFromStream(System.in);
+		System.out.println(NEW_VALUE);
 		this.printNewState();
 	}
 
@@ -163,11 +174,12 @@ public class MySet extends List<SubSet> {
 	 * @param is flux d'entrée
 	 */
 	public void removeAllFromStream(InputStream is) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+		Scanner sc = new Scanner(is);
+		int value = readValue(sc, -1);
+		while (value != -1) {
+			this.removeNumber(value);
+			value = readValue(sc, -1);
+		}
 	}
 
 	/**
@@ -179,15 +191,15 @@ public class MySet extends List<SubSet> {
 
 		int rank = value / 256;
 		int smallSetOccurence = value % 256;
-		Iterator<SubSet> it = iterator();
+		Iterator<SubSet> it = this.iterator();
 		SubSet subSet = it.getValue();
 
 		while (subSet.rank < rank) {
-			it.goForward();
+			subSet = it.nextValue();
 		}
 
 		if (subSet.rank == rank) {
-			subSet.set.remove(smallSetOccurence);
+			it.getValue().set.remove(smallSetOccurence);
 		}
 	}
 
@@ -196,10 +208,9 @@ public class MySet extends List<SubSet> {
 	 */
 	public int size() {
 		Iterator<SubSet> it = this.iterator();
-		SubSet subSet = it.getValue();
 		int count = 0;
 		while (!it.isOnFlag()) {
-			count += subSet.set.size();
+			count += it.getValue().set.size();
 			it.goForward();
 		}
 		return count;
@@ -216,6 +227,27 @@ public class MySet extends List<SubSet> {
 	 */
 	public void difference(MySet set2) {
 
+		Iterator<SubSet> it1 = this.iterator();
+		Iterator<SubSet> it2 = set2.iterator();
+
+		while (!it1.isOnFlag()) {
+			SubSet subSet1 = it1.getValue();
+			SubSet subSet2 = it2.getValue();
+
+			if (subSet1.rank < subSet2.rank) {
+				it1.goForward();
+			} else if (subSet1.rank > subSet2.rank) {
+				it2.goForward();
+			} else {
+				it1.getValue().set.difference(subSet2.set);
+				if (it1.getValue().set.isEmpty()) {
+					it1.remove();
+				} else {
+					it1.goForward();
+				}
+				it2.goForward();
+			}
+		}
 	}
 
 	/**
@@ -224,11 +256,31 @@ public class MySet extends List<SubSet> {
 	 * @param set2 deuxième ensemble
 	 */
 	public void symmetricDifference(MySet set2) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+		Iterator<SubSet> it1 = this.iterator();
+		Iterator<SubSet> it2 = set2.iterator();
+
+		while (!it2.isOnFlag()) {
+			SubSet subSet1 = it1.getValue();
+			SubSet subSet2 = it2.getValue();
+
+			if (subSet1.rank < subSet2.rank) {
+				// Garde subSet1 seulement, car il est unique à this
+				it1.goForward();
+			} else if (subSet1.rank > subSet2.rank) {
+				// Ajoute subSet2, car il est unique à set2
+				it1.addLeft(subSet2);
+				it1.goForward();
+				it2.goForward();
+			} else if (subSet1.rank == subSet2.rank) {
+				it1.getValue().set.symmetricDifference(subSet2.set);
+				if (it1.getValue().set.isEmpty()) {
+					it1.remove();
+				} else {
+					it1.goForward();
+				}
+				it2.goForward();
+			}
+		}
 	}
 
 	/**
@@ -237,11 +289,26 @@ public class MySet extends List<SubSet> {
 	 * @param set2 deuxième ensemble
 	 */
 	public void intersection(MySet set2) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+
+		Iterator<SubSet> it1 = this.iterator();
+		Iterator<SubSet> it2 = set2.iterator();
+		while (!it1.isOnFlag()) {
+			SubSet subSet1 = it1.getValue();
+			SubSet subSet2 = it2.getValue();
+			if (subSet1.rank < subSet2.rank) {
+				it1.remove();
+			} else if (subSet1.rank > subSet2.rank) {
+				it2.goForward();
+			} else if (subSet1.rank == subSet2.rank) {
+				it1.getValue().set.intersection(subSet2.set);
+				if (it1.getValue().set.isEmpty()) {
+					it1.remove();
+				} else {
+					it1.goForward();
+				}
+				it2.goForward();
+			}
+		}
 	}
 
 	/**
@@ -250,11 +317,26 @@ public class MySet extends List<SubSet> {
 	 * @param set2 deuxième ensemble
 	 */
 	public void union(MySet set2) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
+
+		Iterator<SubSet> it1 = this.iterator();
+		Iterator<SubSet> it2 = set2.iterator();
+
+		while (!it2.isOnFlag()) {
+			SubSet subSet1 = it1.getValue();
+			SubSet subSet2 = it2.getValue();
+
+			if (subSet1.rank < subSet2.rank) {
+				it1.goForward();
+			} else if (subSet1.rank > subSet2.rank) {
+				it1.addLeft(subSet2);
+				it1.goForward();
+				it2.goForward();
+			} else if (subSet1.rank == subSet2.rank) {
+				it1.getValue().set.union(subSet2.set);
+				it1.goForward();
+				it2.goForward();
+			}
+		}
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -276,12 +358,21 @@ public class MySet extends List<SubSet> {
 		} else if (!(o instanceof MySet)) {
 			b = false;
 		} else {
-			System.out.println("------------------------------------------");
-			System.out.println("------------------------------------------");
-			System.out.println("---------- fonction à écrire -------------");
-			System.out.println("------------------------------------------");
-			System.out.println("------------------------------------------");
-			b = false;
+			MySet set2 = (MySet) o;
+			Iterator<SubSet> it1 = this.iterator();
+			Iterator<SubSet> it2 = set2.iterator();
+			SubSet subSet1 = it1.getValue();
+			SubSet subSet2 = it2.getValue();
+
+			while (!it1.isOnFlag() &&
+					!it2.isOnFlag() &&
+					subSet1.rank == subSet2.rank &&
+					subSet1.set.equals(subSet2.set)) {
+
+				subSet1 = it1.nextValue();
+				subSet2 = it2.nextValue();
+			}
+			b = it1.isOnFlag() && it2.isOnFlag();
 		}
 		return b;
 	}
@@ -291,12 +382,31 @@ public class MySet extends List<SubSet> {
 	 * @return true si this est inclus dans set2, false sinon
 	 */
 	public boolean isIncludedIn(MySet set2) {
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		System.out.println("---------- fonction à écrire -------------");
-		System.out.println("------------------------------------------");
-		System.out.println("------------------------------------------");
-		return false;
+
+		Iterator<SubSet> it1 = this.iterator();
+		Iterator<SubSet> it2 = set2.iterator();
+
+		while (!it1.isOnFlag()) {
+			SubSet subSet1 = it1.getValue();
+			SubSet subSet2 = it2.getValue();
+
+			if (subSet1.rank < subSet2.rank) {
+				return false;
+			} else if (subSet2.rank < subSet1.rank) {
+				it2.goForward();
+			} else if (subSet1.set.isIncludedIn(subSet2.set)) {
+				/*
+				 * Quand les deux premières conditions ne sont pas vérifiées,
+				 * c'est que subSet1.rank == subSet2.rank, donc pas peine
+				 * de vérifier à nouveau cette égalité dans le if
+				 */
+				it1.goForward();
+				it2.goForward();
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -458,6 +568,7 @@ public class MySet extends List<SubSet> {
 		int value = scanner.nextInt();
 		while (value < min || value > 32767) {
 			System.out.println("valeur incorrecte");
+			value = scanner.nextInt();
 		}
 		return value;
 	}
