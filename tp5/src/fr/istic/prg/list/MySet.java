@@ -87,7 +87,7 @@ public class MySet extends List<SubSet> {
 	}
 
 	/**
-	 * @param element valeur à tester
+	 * @param value valeur à tester
 	 * @return true si valeur appartient à l'ensemble, false sinon
 	 */
 
@@ -124,22 +124,11 @@ public class MySet extends List<SubSet> {
 	 * @param is flux d'entrée.
 	 */
 	public void addAllFromStream(InputStream is) {
-		try {
-			/* Correspond à la valeur qui doit être ajoutée à this */
-			int value;
-			while ((value = is.read()) != -1) {
-				addNumber(value);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		Scanner sc = new Scanner(is);
+		int value = readValue(sc, 0);
+		while (value != -1) {
+			addNumber(value);
+			value = readValue(sc, 0);
 		}
 	}
 
@@ -229,10 +218,9 @@ public class MySet extends List<SubSet> {
 	 */
 	public int size() {
 		Iterator<SubSet> it = this.iterator();
-		SubSet subSet = it.getValue();
 		int count = 0;
 		while (!it.isOnFlag()) {
-			count += subSet.set.size();
+			count += it.getValue().set.size();
 			it.goForward();
 		}
 		return count;
@@ -249,21 +237,25 @@ public class MySet extends List<SubSet> {
 	 */
 	public void difference(MySet set2) {
 
-		/* Parcours this */
 		Iterator<SubSet> it1 = this.iterator();
-
-		/* Parcours set2 */
 		Iterator<SubSet> it2 = set2.iterator();
 
-		while (!it1.isOnFlag() && !it2.isOnFlag()) {
+		while (!it1.isOnFlag()) {
 			SubSet subSet1 = it1.getValue();
 			SubSet subSet2 = it2.getValue();
+
 			if (subSet1.rank < subSet2.rank) {
 				it1.goForward();
 			} else if (subSet1.rank > subSet2.rank) {
 				it2.goForward();
 			} else {
 				it1.getValue().set.difference(subSet2.set);
+				if (it1.getValue().set.isEmpty()) {
+					it1.remove();
+				} else {
+					it1.goForward();
+				}
+				it2.goForward();
 			}
 		}
 	}
@@ -287,14 +279,14 @@ public class MySet extends List<SubSet> {
 			} else if (subSet1.rank > subSet2.rank) {
 				// Ajoute subSet2, car il est unique à set2
 				it1.addLeft(subSet2);
+				it1.goForward();
 				it2.goForward();
 			} else if (subSet1.rank == subSet2.rank) {
 				it1.getValue().set.symmetricDifference(subSet2.set);
-				if (!it1.getValue().set.isEmpty()) {
-					it1.goForward();
-				} else {
-					// Supprime subSet1 si la différence symétrique est vide
+				if (it1.getValue().set.isEmpty()) {
 					it1.remove();
+				} else {
+					it1.goForward();
 				}
 				it2.goForward();
 			}
