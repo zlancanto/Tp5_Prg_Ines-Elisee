@@ -313,6 +313,8 @@ public class MySet extends List<SubSet> {
 				it1.getValue().set.intersection(subSet2.set);
 				if (it1.getValue().set.isEmpty()) {
 					it1.remove();
+				} else {
+					it1.goForward();
 				}
 				it2.goForward();
 			}
