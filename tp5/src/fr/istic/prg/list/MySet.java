@@ -382,7 +382,7 @@ public class MySet extends List<SubSet> {
 				subSet1 = it1.nextValue();
 				subSet2 = it2.nextValue();
 			}
-			b = it1.isOnFlag() && it2.isOnFlag() ? true : false;
+			b = it1.isOnFlag() && it2.isOnFlag();
 		}
 		return b;
 	}
