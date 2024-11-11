@@ -15,7 +15,9 @@ import java.io.OutputStream;
 import java.util.Scanner;
 
 /**
- * @author Mickaël Foursov <foursov@univ-rennes.fr>
+ * @author Zlanca-Nto ELisée MIHAN<zlanca-nto.mihan@etudiant.univ-rennes.fr>
+ * @author Ines Gaetan NOUBI-SI KUISSEU
+ *         <ines-gaetan.noubi@etudiant.univ-rennes.fr>
  * @version 4.1
  * @since 2023-10-11
  */
@@ -92,15 +94,17 @@ public class MySet extends List<SubSet> {
 	public boolean containsValue(int value) {
 
 		int rank = value / 256;
-		int valueSet = value % 256;
+		int smallSetValue = value % 256;
 		Iterator<SubSet> it = this.iterator();
-		SubSet subSet = it.getValue();
 
-		while (subSet.rank <= rank && !subSet.set.contains(valueSet)) {
+		while (it.getValue().rank < rank) {
 			it.goForward();
 		}
+		if (it.getValue().rank == rank && it.getValue().set.contains(smallSetValue)) {
+			return true;
+		}
 
-		return subSet.set.contains(valueSet);
+		return false;
 	}
 
 	/**
@@ -110,6 +114,7 @@ public class MySet extends List<SubSet> {
 	public void add() {
 		System.out.println(" valeurs a ajouter (-1 pour finir) : ");
 		this.addAllFromStream(System.in);
+		System.out.println(NEW_VALUE);
 		this.printNewState();
 	}
 
@@ -147,7 +152,7 @@ public class MySet extends List<SubSet> {
 
 		int rank = value / 256;
 		int smallSetOccurence = value % 256;
-		Iterator<SubSet> it = iterator();
+		Iterator<SubSet> it = this.iterator();
 		SubSet subSet = it.getValue();
 
 		while (subSet.rank < rank) {
@@ -207,7 +212,7 @@ public class MySet extends List<SubSet> {
 
 		int rank = value / 256;
 		int smallSetOccurence = value % 256;
-		Iterator<SubSet> it = iterator();
+		Iterator<SubSet> it = this.iterator();
 		SubSet subSet = it.getValue();
 
 		while (subSet.rank < rank) {
