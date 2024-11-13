@@ -158,7 +158,7 @@ public class List<T extends SuperT<T>> {
      * Supprimer toutes les valeurs de la liste.
      */
     public void clear() {
-        ListIterator it = iterator();
+        ListIterator it = this.iterator();
         while (!it.isOnFlag()) {
             it.remove();
             it.goForward();
@@ -171,7 +171,7 @@ public class List<T extends SuperT<T>> {
      * @param v valeur à mettre dans le drapeau.
      */
     public void setFlag(T v) {
-        this.flag.value = v;
+        flag.value = v;
     }
 
     /**
@@ -180,7 +180,7 @@ public class List<T extends SuperT<T>> {
      * @param v valeur à ajouter
      */
     public void addHead(T v) {
-        ListIterator it = iterator();
+        ListIterator it = this.iterator();
         it.addLeft(v);
     }
 
