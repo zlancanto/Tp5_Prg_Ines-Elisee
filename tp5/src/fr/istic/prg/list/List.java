@@ -1,4 +1,3 @@
-
 package fr.istic.prg.list;
 
 import fr.istic.prg.list_util.Iterator;
@@ -7,8 +6,9 @@ import fr.istic.prg.list_util.SuperT;
 /**
  * Liste en double chaînage par références
  * 
- * @author Mickaël Foursov
- * @author Vincent Drevelle
+ * @author Zlanca-Nto ELisée MIHAN<zlanca-nto.mihan@etudiant.univ-rennes.fr>
+ * @author Ines Gaetan NOUBI-SI KUISSEU
+ *         <ines-gaetan.noubi@etudiant.univ-rennes.fr>
  * 
  *         Version corrigée et instrumentée (compte du nombre d'opérations).
  *         Utilise un versionnage pour empêcher les modifs concurrentes.
@@ -47,50 +47,75 @@ public class List<T extends SuperT<T>> {
          * @see List::iterator()
          */
         private ListIterator() {
+            current = flag.right;
         }
 
         @Override
         public void goForward() {
+            current = current.right;
         }
 
         @Override
         public void goBackward() {
+            current = current.left;
         }
 
         @Override
         public void restart() {
+            current = flag.right;
         }
 
         @Override
         public boolean isOnFlag() {
-            return false;
+            return current == flag;
         }
 
         @Override
         public void remove() {
-            assert current != flag : "impossible de retirer le drapeau";
+            assert current != flag : "Impossible de retirer le drapeau";
+            Element leftNeighboor = current.left;
+            Element rightNeighboor = current.right;
+            leftNeighboor.right = rightNeighboor;
+            rightNeighboor.left = leftNeighboor;
+            current = rightNeighboor;
         }
 
         @Override
         public T getValue() {
-            return null;
+            return current.value;
         }
 
         @Override
         public T nextValue() {
-            return null;
+            this.goForward();
+            return current.value;
         }
 
         @Override
         public void addLeft(T value) {
+            Element newElement = new Element();
+            newElement.value = value;
+            newElement.left = current.left;
+            newElement.right = current;
+            current.left = newElement;
+            newElement.left.right = newElement;
+            current = current.left;
         }
 
         @Override
         public void addRight(T value) {
+            Element newElement = new Element();
+            newElement.value = value;
+            newElement.left = current;
+            newElement.right = current.right;
+            current.right = newElement;
+            newElement.right.left = newElement;
+            current = current.right;
         }
 
         @Override
         public void setValue(T value) {
+            current.value = value;
         }
 
         @Override
@@ -109,6 +134,9 @@ public class List<T extends SuperT<T>> {
      * Instancie une liste vide (contenant seulement le drapeau).
      */
     public List() {
+        flag = new Element();
+        flag.left = flag;
+        flag.right = flag;
     }
 
     /**
@@ -116,20 +144,25 @@ public class List<T extends SuperT<T>> {
      *         positionné sur l’élément de tête.
      */
     public ListIterator iterator() {
-        return null;
+        return new ListIterator();
     }
 
     /**
      * @return true si la liste est vide, false sinon
      */
     public boolean isEmpty() {
-        return false;
+        return (flag.left == flag && flag.right == flag);
     }
 
     /**
      * Supprimer toutes les valeurs de la liste.
      */
     public void clear() {
+        ListIterator it = iterator();
+        while (!it.isOnFlag()) {
+            it.remove();
+            it.goForward();
+        }
     }
 
     /**
@@ -138,6 +171,7 @@ public class List<T extends SuperT<T>> {
      * @param v valeur à mettre dans le drapeau.
      */
     public void setFlag(T v) {
+        this.flag.value = v;
     }
 
     /**
@@ -146,6 +180,8 @@ public class List<T extends SuperT<T>> {
      * @param v valeur à ajouter
      */
     public void addHead(T v) {
+        ListIterator it = iterator();
+        it.addLeft(v);
     }
 
     /**
@@ -154,6 +190,9 @@ public class List<T extends SuperT<T>> {
      * @param v valeur à ajouter
      */
     public void addTail(T v) {
+        ListIterator it = iterator();
+        it.goBackward();
+        it.addLeft(v);
     }
 
     /**
