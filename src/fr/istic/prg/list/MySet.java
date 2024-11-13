@@ -201,6 +201,9 @@ public class MySet extends List<SubSet> {
 		if (subSet.rank == rank) {
 			it.getValue().set.remove(smallSetOccurence);
 		}
+		if (it.getValue().set.isEmpty()) {
+			it.remove();
+		}
 	}
 
 	/**
@@ -331,7 +334,7 @@ public class MySet extends List<SubSet> {
 				it1.addLeft(subSet2);
 				it1.goForward();
 				it2.goForward();
-			} else if (subSet1.rank == subSet2.rank) {
+			} else {
 				it1.getValue().set.union(subSet2.set);
 				it1.goForward();
 				it2.goForward();
