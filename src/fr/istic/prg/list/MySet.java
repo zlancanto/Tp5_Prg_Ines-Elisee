@@ -230,6 +230,16 @@ public class MySet extends List<SubSet> {
 	 */
 	public void difference(MySet set2) {
 
+		/**
+		 * Quand this == set, on a deux itérateurs sur le même objet
+		 * ce qui peut engendrer des erreurs potentiels. En l'ocurrence
+		 * des erreurs liées à la suppression
+		 */
+		if (this == set2) {
+			this.clear();
+			return;
+		}
+
 		Iterator<SubSet> it1 = this.iterator();
 		Iterator<SubSet> it2 = set2.iterator();
 
@@ -259,6 +269,17 @@ public class MySet extends List<SubSet> {
 	 * @param set2 deuxième ensemble
 	 */
 	public void symmetricDifference(MySet set2) {
+
+		/**
+		 * Quand this == set, on a deux itérateurs sur le même objet
+		 * ce qui peut engendrer des erreurs potentiels. En l'ocurrence
+		 * des erreurs liées à la suppression
+		 */
+		if (this == set2) {
+			this.clear();
+			return;
+		}
+
 		Iterator<SubSet> it1 = this.iterator();
 		Iterator<SubSet> it2 = set2.iterator();
 
@@ -274,7 +295,7 @@ public class MySet extends List<SubSet> {
 				it1.addLeft(subSet2);
 				it1.goForward();
 				it2.goForward();
-			} else if (subSet1.rank == subSet2.rank) {
+			} else {
 				it1.getValue().set.symmetricDifference(subSet2.set);
 				if (it1.getValue().set.isEmpty()) {
 					it1.remove();
@@ -302,7 +323,7 @@ public class MySet extends List<SubSet> {
 				it1.remove();
 			} else if (subSet1.rank > subSet2.rank) {
 				it2.goForward();
-			} else if (subSet1.rank == subSet2.rank) {
+			} else {
 				it1.getValue().set.intersection(subSet2.set);
 				if (it1.getValue().set.isEmpty()) {
 					it1.remove();
