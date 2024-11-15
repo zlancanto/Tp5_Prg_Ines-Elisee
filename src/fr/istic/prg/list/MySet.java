@@ -290,6 +290,7 @@ public class MySet extends List<SubSet> {
 			if (subSet1.rank < subSet2.rank) {
 				it1.goForward();
 			} else if (subSet1.rank > subSet2.rank) {
+				/* La copie est nécessaire */
 				it1.addLeft(subSet2.copyOf());
 				it1.goForward();
 				it2.goForward();
@@ -345,16 +346,17 @@ public class MySet extends List<SubSet> {
 
 		while (!it2.isOnFlag()) {
 			SubSet subSet1 = it1.getValue();
-			SubSet subSet2 = it2.getValue();
+			/* La copie est nécessaire */
+			SubSet subSet2 = it2.getValue().copyOf();
 
 			if (subSet1.rank < subSet2.rank) {
 				it1.goForward();
 			} else if (subSet1.rank > subSet2.rank) {
-				it1.addLeft(subSet2.copyOf());
+				it1.addLeft(subSet2);
 				it1.goForward();
 				it2.goForward();
 			} else {
-				it1.getValue().set.union(subSet2.copyOf().set);
+				it1.getValue().set.union(subSet2.set);
 				it1.goForward();
 				it2.goForward();
 			}

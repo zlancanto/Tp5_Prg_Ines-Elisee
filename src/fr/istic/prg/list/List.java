@@ -73,11 +73,9 @@ public class List<T extends SuperT<T>> {
         @Override
         public void remove() {
             assert current != flag : "Impossible de retirer le drapeau";
-            Element leftNeighboor = current.left;
-            Element rightNeighboor = current.right;
-            leftNeighboor.right = rightNeighboor;
-            rightNeighboor.left = leftNeighboor;
-            current = rightNeighboor;
+            current.left.right = current.right;
+            current.right.left = current.left;
+            current = current.right;
         }
 
         @Override
@@ -99,7 +97,7 @@ public class List<T extends SuperT<T>> {
             newElement.right = current;
             current.left = newElement;
             newElement.left.right = newElement;
-            current = current.left;
+            current = newElement;
         }
 
         @Override
@@ -110,7 +108,7 @@ public class List<T extends SuperT<T>> {
             newElement.right = current.right;
             current.right = newElement;
             newElement.right.left = newElement;
-            current = current.right;
+            current = newElement;
         }
 
         @Override
@@ -161,7 +159,6 @@ public class List<T extends SuperT<T>> {
         ListIterator it = this.iterator();
         while (!it.isOnFlag()) {
             it.remove();
-            it.goForward();
         }
     }
 
