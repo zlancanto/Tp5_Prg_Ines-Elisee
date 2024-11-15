@@ -1,5 +1,10 @@
 {
   "java.project.referencedLibraries": [
-    "lib/*.jar"
+    "c:\\Univ-Rennes\\Projet\\Prg\\Tp5_Prg_Ines-Elisee\\lib\\hamcrest-core-1.3.jar",
+    "c:\\Univ-Rennes\\Projet\\Prg\\Tp5_Prg_Ines-Elisee\\lib\\junit-4.13.2.jar",
+    "c:\\Univ-Rennes\\Projet\\Prg\\Tp5_Prg_Ines-Elisee\\lib\\tp-listes.jar"
+  ],
+  "java.project.sourcePaths": [
+    "src"
   ]
 }

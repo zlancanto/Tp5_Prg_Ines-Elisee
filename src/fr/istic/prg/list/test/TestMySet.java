@@ -18,8 +18,9 @@ import fr.istic.prg.list_util.SmallSet;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author Mickaël Foursov <foursov@univ-rennes1.fr>
- * @author Vincent Drevelle
+ * @author Zlanca-Nto ELisée MIHAN<zlanca-nto.mihan@etudiant.univ-rennes.fr>
+ * @author Ines Gaetan NOUBI-SI KUISSEU
+ *         <ines-gaetan.noubi@etudiant.univ-rennes.fr>
  * @version 4.0
  * @since 2023-10-08
  * 
@@ -492,7 +493,7 @@ public class TestMySet {
 		assertTrue("union f0 and f3", compareMySets(mySet1, mySet3));
 		assertConstness("union f0 and f3", mySet2, ENS3);
 		assertTrue(BAD_COMPLEXITY, complexity <= 16 + OP_COUNT_ADD);
-		}
+	}
 
 	@Test
 	public void testUnion2() {
@@ -703,7 +704,7 @@ public class TestMySet {
 		assertConstness("equals (this)", mySet1, ENS0);
 		assertConstness("equals (other)", mySet2, ENS0);
 		assertTrue(BAD_COMPLEXITY, complexity <= 12 + OP_COUNT_ADD);
-		}
+	}
 
 	@Test
 	public void testEquality2() {
